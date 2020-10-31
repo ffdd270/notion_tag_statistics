@@ -54,15 +54,11 @@ def get_tags_count(notion_client: NotionClient, path: str, tag_name: str) -> dic
 account: TextIO = open("notion_account.env", "r")
 token = get_token(account)
 
-# Obtain the `token_v2` value by inspecting your browser cookies on a logged-in (non-guest) session on Notion.so
 client = NotionClient(token_v2=token)
-
-# Replace this URL with the URL of the page you want to edit
 
 tags = get_tags_count(client,
                       "https://www.notion.so/sihawn/9600ea9d0583409d8d914807ec58f253?v=aae30af392e84573b1a53ee39d531f61",
                       "태그");
-
 sort_tag: [dict] = []
 
 for k in tags:
