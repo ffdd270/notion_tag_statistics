@@ -22,6 +22,7 @@ def get_tags_count(notion_client: NotionClient, path: str, tag_name: str) -> dic
     collection_view: CollectionView = notion_client.get_collection_view(path)
     collection: Collection = collection_view.collection
 
+    row_cnt : int = 0
     schema: list = None
     name_to_slug: str = None
     tags_dict: dict = {}
@@ -43,12 +44,14 @@ def get_tags_count(notion_client: NotionClient, path: str, tag_name: str) -> dic
 
         tags: list[str] = getattr(collection_row, name_to_slug)
 
+        row_cnt += 1;
+
         for tag in tags:
             if tags_dict.get(tag) is None:
                 tags_dict[tag] = 0
             tags_dict[tag] += 1
 
-    return tags_dict
+    return tags_dict, row_cnt
 
 
 account: TextIO = open("notion_account.env", "r")
@@ -56,8 +59,8 @@ token = get_token(account)
 
 client = NotionClient(token_v2=token)
 
-tags = get_tags_count(client,
-                      "https://www.notion.so/sihawn/9600ea9d0583409d8d914807ec58f253?v=aae30af392e84573b1a53ee39d531f61",
+tags, cnt = get_tags_count(client,
+                      "https://www.notion.so/kuronekolab/9600ea9d0583409d8d914807ec58f253?v=aae30af392e84573b1a53ee39d531f61",
                       "태그");
 sort_tag: [dict] = []
 
@@ -68,3 +71,5 @@ sort_tag.sort(key=lambda v: v['value'], reverse=True)
 
 for v in sort_tag:
     print(v)
+
+print('CNT : ', cnt)
