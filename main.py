@@ -42,14 +42,22 @@ def get_tags_count(notion_client: NotionClient, path: str, tag_name: str) -> dic
                 print("Maybe, that is wrong property.")
                 return {}
 
-        tags: list[str] = getattr(collection_row, name_to_slug)
+        attr_value = getattr(collection_row, name_to_slug)
 
-        row_cnt += 1;
+        row_cnt += 1
 
-        for tag in tags:
-            if tags_dict.get(tag) is None:
-                tags_dict[tag] = 0
-            tags_dict[tag] += 1
+        if attr_value is None:
+            continue
+
+        if isinstance(attr_value, list):
+            for tag in attr_value:
+                if tags_dict.get(tag) is None:
+                    tags_dict[tag] = 0
+                tags_dict[tag] += 1
+        elif isinstance(attr_value, str):
+            if tags_dict.get(attr_value) is None:
+                tags_dict[attr_value] = 0
+            tags_dict[attr_value] += 1
 
     return tags_dict, row_cnt
 
@@ -60,8 +68,8 @@ token = get_token(account)
 client = NotionClient(token_v2=token)
 
 tags, cnt = get_tags_count(client,
-                      "https://www.notion.so/kuronekolab/9600ea9d0583409d8d914807ec58f253?v=aae30af392e84573b1a53ee39d531f61",
-                      "태그");
+                      "https://www.notion.so/kuronekolab/d9b2cc36d2d24d28b92c7f4a18741ebd?v=810efb113d8d40ffaa307fe494471217",
+                      "상태");
 sort_tag: [dict] = []
 
 for k in tags:
